@@ -1,10 +1,13 @@
 var express = require('express');
+var knex = require('../db/knex');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //req all from database
-  res.render('view_books', { title: 'all data' });
+  knex('books').then(function(booksData){
+    res.render('view_books', { books: booksData });
+  })
 });
 
 router.get('/new', function(req, res, next) {

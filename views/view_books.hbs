@@ -1,3 +1,8 @@
-<div class="">
-  list all books
-</div>
+<h1>Books</h1>
+
+{{#each books}}
+  <h2>{{title}}</h2>
+  <h3>{{genre}}</h3>
+  <p>{{description}}</p>
+  <img src="{{cover_url}}" alt="" />
+{{/each}}
