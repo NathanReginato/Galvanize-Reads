@@ -5,28 +5,33 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //req all from database
-  var x = 1;
-  booksObject = {}
-  knex('books_and_authors')
-    .where({book_id: x}).pluck('author_id')
-    .then(function(id){
-      console.log(id);
-      return knex('authors')
-        .whereIn('author_id', id)
-        .pluck('first_name')
-        .then(function(first){
-          booksObject.first = first
-          return knex('authors')
-            .whereIn('author_id', id)
-            .pluck('last_name')
-            .then(function(last){
-              booksObject.last = last
+  function getBooks() {
+    var x = 1;
+    booksObject = {}
+    knex('books_and_authors')
+      .where({book_id: x}).pluck('author_id')
+      .then(function(id){
+        return knex('authors')
+          .whereIn('author_id', id)
+          .pluck('first_name')
+          .then(function(first){
+            booksObject.first = first
+            return knex('authors')
+              .whereIn('author_id', id)
+              .pluck('last_name')
+              .then(function(last){
+                booksObject.last = last
+        })
       })
+    }).then(function(){
+      knex('books').where({book_id: x}).then(function(book){
+        booksObject.book = book
+        res.render('view_books', { book: booksObject.book });
+      })
+      console.log(booksObject);
     })
-  }).then(function(){
-    knex
-  })
-    // res.render('view_books', { book: booksData });
+  }
+
 });
 
 router.get('/new', function(req, res, next) {
