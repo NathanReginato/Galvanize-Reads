@@ -5,9 +5,16 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //req all from database
-  knex('books').then(function(booksData){
-    res.render('view_books', { book: booksData });
+  booksObject = {}
+  knex('books_and_authors')
+  .pluck('book_id').then(function(ids) {
+    console.log(ids);
+    knex('books').whereIn('book_id', ids)
+    .then(function(books){
+      console.log(books);
+    })
   })
+    // res.render('view_books', { book: booksData });
 });
 
 router.get('/new', function(req, res, next) {
