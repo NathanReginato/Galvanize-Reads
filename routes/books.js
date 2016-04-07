@@ -5,33 +5,23 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //req all from database
-  function getBooks() {
-    var x = 1;
-    booksObject = {}
-    knex('books_and_authors')
-      .where({book_id: x}).pluck('author_id')
+  knex('books').pluck('book_id').then(function(bookid){
+    bookid.forEach(function(elem){
+      knex('books_and_authors')
+      .where({book_id: elem})
+      .pluck('author_id')
       .then(function(id){
         return knex('authors')
-          .whereIn('author_id', id)
-          .pluck('first_name')
-          .then(function(first){
-            booksObject.first = first
-            return knex('authors')
-              .whereIn('author_id', id)
-              .pluck('last_name')
-              .then(function(last){
-                booksObject.last = last
+        .whereIn('author_id', id).select('first_name', 'last_name').then(function(name){
+          console.log(name);
+        })
+      }).then(function(){
+        knex('books').where({book_id: elem}).then(function(book){
+          console.log(book);
         })
       })
-    }).then(function(){
-      knex('books').where({book_id: x}).then(function(book){
-        booksObject.book = book
-        res.render('view_books', { book: booksObject.book });
-      })
-      console.log(booksObject);
     })
-  }
-
+  })
 });
 
 router.get('/new', function(req, res, next) {
