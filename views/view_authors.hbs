@@ -1,3 +1,7 @@
-<div class="">
-  list all authors
-</div>
+<h1>Authors</h1>
+
+{{#each author}}
+  <h2>{{first_name}} {{last_name}}</h2>
+  <p>{{bio}}</p>
+  <img src="{{portrait_url}}" alt="" />
+{{/each}}

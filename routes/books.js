@@ -6,7 +6,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   //req all from database
   knex('books').then(function(booksData){
-    res.render('view_books', { books: booksData });
+    res.render('view_books', { book: booksData });
   })
 });
 
