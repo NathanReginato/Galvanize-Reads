@@ -4,20 +4,20 @@ exports.up = function(knex, Promise) {
     table.increments('book_id');
     table.string('title');
     table.string('genre');
-    table.text('description')
-    table.string('cover_url')
+    table.text('description');
+    table.string('cover_url');  
   })
   .createTable('authors', function(table){
     table.increments('author_id');
     table.string('first_name');
     table.string('last_name');
     table.text('bio');
-    table.string('portrait_url')
+    table.string('portrait_url');
   })
   .createTable('books_and_authors', function(table) {
     table.increments('id');
-    table.integer('book_id').unsigned().references('book_id').inTable('books');
-    table.integer('author_id').unsigned().references('author_id').inTable('authors');
+    table.integer('book_id');
+    table.integer('author_id');
   })
 };
 
