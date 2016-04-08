@@ -122,12 +122,11 @@ router.post('/edit/editpost', function(req, res, next) {
   //write code here!
   console.log(req.body['authors-data']);
 
-  knex('books')
-  .join('books_and_authors', 'books.book_id', '=', 'books_and_authors.book_id')
-  .where({'books.book_id': parseInt(req.body['book-id'])})
-  .first()
+  knex('books_and_authors')
+  .where({'book_id': parseInt(req.body['book-id'])})
+  .pluck('author_id')
   .then(function(book){
-    console.log(book.author_id);
+    console.log(book);
   })
   res.redirect('/');
 });
