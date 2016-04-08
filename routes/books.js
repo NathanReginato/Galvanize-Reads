@@ -167,6 +167,7 @@ router.get('/delete/:id', function(req, res, next) {
   .then(function(){
     knex('books_and_authors')
     .where({'book_id': req.params.id})
+    .del()
   })
   res.redirect('/')
 });
