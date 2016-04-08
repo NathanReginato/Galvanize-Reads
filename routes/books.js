@@ -92,19 +92,19 @@ router.get('/edit/:id', function(req, res, next) {
         return knex('authors')
         .select('first_name', 'last_name', 'author_id')
         .then(function(authorNames){
-          var fullname = []
-          for (var i = 0; i < bookjoin.first_name.length; i++) {
-            fullname.push(bookjoin.first_name[i] + ' ' + bookjoin.last_name[i])
-          }
-          console.log(fullname);
-          res.render('new_edit_books', { title: 'Edit',
-                                         action: 'edit',
-                                         pTitle: bookjoin.title,
-                                         pGenre: bookjoin.genre,
-                                         pDes: bookjoin.description,
-                                         pUrl: bookjoin.cover_url,
-                                         name: authorNames,
-                                         authors: fullname});
+              var fullname = []
+              for (var i = 0; i < bookjoin.first_name.length; i++) {
+                fullname.push(bookjoin.first_name[i] + ' ' + bookjoin.last_name[i])
+              }
+              console.log(fullname);
+              res.render('new_edit_books', { title: 'Edit',
+                                             action: 'edit',
+                                             pTitle: bookjoin.title,
+                                             pGenre: bookjoin.genre,
+                                             pDes: bookjoin.description,
+                                             pUrl: bookjoin.cover_url,
+                                             name: authorNames,
+                                             authors: fullname });
 
     })
   })
