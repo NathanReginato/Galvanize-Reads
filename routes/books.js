@@ -119,6 +119,7 @@ router.get('/edit/:id', function(req, res, next) {
 
 router.post('/edit/editpost', function(req, res, next) {
     console.log(req.body);
+    
     res.redirect('/');
 });
 
