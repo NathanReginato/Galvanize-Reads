@@ -9,7 +9,7 @@ knex('books_and_authors')
     .join('books', 'books_and_authors.book_id', '=', 'books.book_id')
     .join('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
     .select('title')
-    .select(knex.raw('string_agg(first_name, \', \')'))
+    .select(knex.raw('string_agg(first_name, \', \') AS first_name ,string_agg(last_name, \' ,\') AS last_name'))
     .groupBy('title')
     .then(function(bookjoin) {
       console.log(bookjoin);
