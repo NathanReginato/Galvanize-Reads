@@ -3,6 +3,8 @@ var knex = require('../db/knex');
 var router = express.Router();
 
 /* GET home page. */
+
+//books-------------------------------------------------------------------------
 router.get('/', function(req, res, next) {
 //req all from database
 knex('books_and_authors')
@@ -16,6 +18,8 @@ knex('books_and_authors')
     })
 })
 
+//new---------------------------------------------------------------------------
+
 router.get('/new', function(req, res, next) {
     //Insert book
     knex('authors')
@@ -25,21 +29,40 @@ router.get('/new', function(req, res, next) {
     })
 });
 
+//postnew-----------------------------------------------------------------------
+
 router.post('/newpost', function(req, res, next) {
     //Insert book
     console.log(req.body);
     var splitAuthorsString = req.body['authors-data'].split(',')
 
-
+    //Insert books with author
     if (splitAuthorsString[0] !== 'none') {
       var splitAuthors = splitAuthorsString.map(function(elem) {
         return parseInt(elem)
       })
       console.log(splitAuthors);
       console.log('with author');
+      knex('books')
+      .returning('book_id')
+      .insert({title: req.body['book-title'],
+               description: req.body.description,
+               cover_url: req.body['img-url']})
+      .then(function(id){
+        console.log(id);
+        splitAuthors.forEach(function(authorsInArray){
+          knex('books_and_authors')
+          .returning('id')
+          .insert({book_id: id[0], author_id: authorsInArray})
+          .then(function(id2){
+            console.log(id2);
+          })
+        })
+      })
+    }
 
-    } else {
-      //Insert book without author(s)!
+    //Insert book without author(s)!
+    else {
       console.log('without author');
       knex('books')
       .returning('book_id')
@@ -52,6 +75,8 @@ router.post('/newpost', function(req, res, next) {
     }
     res.redirect('/');
 });
+
+//edit--------------------------------------------------------------------------
 
 router.get('/edit', function(req, res, next) {
     res.render('new_edit_books', {
