@@ -8,14 +8,14 @@ router.get('/', function(req, res, next) {
 knex('books_and_authors')
     .join('books', 'books_and_authors.book_id', '=', 'books.book_id')
     .join('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
-    .select('title')
+    .select('title', 'description', 'cover_url')
     .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
-    .groupBy('title')
+    .groupBy('title', 'description', 'cover_url')
     .then(function(bookjoin) {
       console.log(bookjoin);
+      res.render('view_books', {book: bookjoin });
     })
-    // console.log(bookjoin);
-    // res.render('view_books', {book: bookjoin });
+
 })
 
 router.get('/new', function(req, res, next) {
