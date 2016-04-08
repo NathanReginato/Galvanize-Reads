@@ -16,7 +16,7 @@ authorData.value = authorsArr
   $('#add-author').on('click', function() {
     var selected = $('#available-authors :selected').text()
     var selectedId = $('#available-authors :selected').attr('value');
-
+    var el = document.getElementById('authors'),
     elChild = document.createElement('option');
     elChild.innerHTML = selected
     elChild.id = selectedId
