@@ -27,8 +27,9 @@
         <label class="col-lg-2 control-label">Authors</label>
         <div class="col-lg-10">
           <select id="authors" name="authors" multiple class="form-control">
-
-
+            {{#each authors}}
+              <option>{{this}}</option>
+            {{/each}}
           </select>
         </div>
       </div>

@@ -14,6 +14,10 @@ knex('books_and_authors')
     .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
     .groupBy('title', 'description', 'cover_url')
     .then(function(bookjoin) {
+      // Implement at some point!!!!
+      // for (var i = 0; i < bookjoin.first_name.length; i++) {
+      //   fullname.push(bookjoin.first_name[i] + ' ' + bookjoin.last_name[i])
+      // }
       res.render('view_books', {book: bookjoin });
     })
 })
@@ -88,14 +92,19 @@ router.get('/edit/:id', function(req, res, next) {
         return knex('authors')
         .select('first_name', 'last_name', 'author_id')
         .then(function(authorNames){
-          console.log(authorNames);
+          var fullname = []
+          for (var i = 0; i < bookjoin.first_name.length; i++) {
+            fullname.push(bookjoin.first_name[i] + ' ' + bookjoin.last_name[i])
+          }
+          console.log(fullname);
           res.render('new_edit_books', { title: 'Edit',
                                          action: 'edit',
                                          pTitle: bookjoin.title,
                                          pGenre: bookjoin.genre,
                                          pDes: bookjoin.description,
                                          pUrl: bookjoin.cover_url,
-                                         name: authorNames});
+                                         name: authorNames,
+                                         authors: fullname});
 
     })
   })
@@ -113,7 +122,7 @@ router.get('/delete', function(req, res, next) {
 });
 
 router.get('/:id', function(req, res, next) {
-    //req id from database
+    //req book by id from database
     knex('books_and_authors')
       .join('books', 'books_and_authors.book_id', '=', 'books.book_id')
       .join('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
