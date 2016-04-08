@@ -18,13 +18,17 @@ knex('books_and_authors')
 
 router.get('/new', function(req, res, next) {
     //Insert book
-    res.render('new_edit_books', {
-        title: 'New'
-    });
+    knex('authors')
+    .select('first_name', 'last_name', 'author_id')
+    .then(function(authorNames){
+      console.log(authorNames);
+      res.render('new_edit_books', { title: 'New', action: 'new', name: authorNames });
+    })
 });
 
-router.post('/new', function(req, res, next) {
+router.post('/newpost', function(req, res, next) {
     //Insert book
+    console.log(req.body);
     res.redirect('/');
 });
 
