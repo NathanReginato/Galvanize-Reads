@@ -112,12 +112,13 @@ router.get('/edit/:id', function(req, res, next) {
                                                pUrl: bookjoin.cover_url,
                                                name: authorNames,
                                                authors: fullname });
-})
+      })
     })
   })
 });
 
-router.post('/editpost', function(req, res, next) {
+router.post('/edit/editpost', function(req, res, next) {
+    console.log(req.body);
     res.redirect('/');
 });
 
