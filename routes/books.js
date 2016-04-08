@@ -21,7 +21,6 @@ router.get('/new', function(req, res, next) {
     knex('authors')
     .select('first_name', 'last_name', 'author_id')
     .then(function(authorNames){
-      console.log(authorNames);
       res.render('new_edit_books', { title: 'New', action: 'new', name: authorNames });
     })
 });
