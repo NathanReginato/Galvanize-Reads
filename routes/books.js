@@ -119,44 +119,16 @@ router.get('/edit/:id', function(req, res, next) {
 });
 
 router.post('/edit/editpost', function(req, res, next) {
+  //write code here!
+  console.log(req.body['authors-data']);
 
-  var splitAuthorsString = req.body['authors-data'].split(',')
-
-  console.log(splitAuthorsString)
-  //Insert books with author
-  if (splitAuthorsString[0] !== '') {
-    var splitAuthors = splitAuthorsString.map(function(elem) {
-      return parseInt(elem)
-    })
-    knex('books')
-    .returning('book_id')
-    .insert({title: req.body['book-title'],
-             description: req.body.description,
-             cover_url: req.body['img-url']})
-    .then(function(id){
-      splitAuthors.forEach(function(authorsInArray){
-        knex('books_and_authors')
-        .returning('id')
-        .insert({book_id: id[0], author_id: authorsInArray})
-        .then(function(id2){
-        })
-      })
-    })
-  }
-
-  //Insert book without author(s)!
-  else {
-    console.log('update book');
-    console.log(req.body['book-id']);
-    knex('books')
-    .where({'book_id': parseInt(req.body['book-id'])})
-    .update(
-      {title: req.body['book-title'],
-       description: req.body.description,
-       cover_url: req.body['img-url']})
-    .then(function(id){
-    })
-  }
+  knex('books')
+  .join('books_and_authors', 'books.book_id', '=', 'books_and_authors.book_id')
+  .where({'books.book_id': parseInt(req.body['book-id'])})
+  .first()
+  .then(function(book){
+    console.log(book.author_id);
+  })
   res.redirect('/');
 });
 
