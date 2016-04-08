@@ -28,6 +28,19 @@ router.get('/new', function(req, res, next) {
 router.post('/newpost', function(req, res, next) {
     //Insert book
     console.log(req.body);
+    var splitAuthorsString = req.body['authors-data'].split(',')
+
+
+    if (splitAuthorsString[0] !== 'none') {
+      var splitAuthors = splitAuthorsString.map(function(elem) {
+        return parseInt(elem)
+      })
+      console.log(splitAuthors);
+      console.log('with author');
+      
+    } else {
+      console.log('without author');
+    }
     res.redirect('/');
 });
 
