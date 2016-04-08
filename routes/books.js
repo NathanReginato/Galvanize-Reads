@@ -149,7 +149,7 @@ router.post('/edit/editpost', function(req, res, next) {
     console.log('update book');
     console.log(req.body['book-id']);
     knex('books')
-    .where('book_id', '=', parseInt(req.body['book-id']))
+    .where({'book_id': parseInt(req.body['book-id'])})
     .update(
       {title: req.body['book-title'],
        description: req.body.description,
@@ -160,10 +160,15 @@ router.post('/edit/editpost', function(req, res, next) {
   res.redirect('/');
 });
 
-router.get('/delete', function(req, res, next) {
-    res.render('delete_book', {
-        title: 'Delete'
-    });
+router.get('/delete/:id', function(req, res, next) {
+  knex('books')
+  .where({'book_id': req.params.id})
+  .del()
+  .then(function(){
+    knex('books_and_authors')
+    .where({'book_id': req.params.id})
+  })
+  res.redirect('/')
 });
 
 router.get('/:id', function(req, res, next) {
