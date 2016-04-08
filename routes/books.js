@@ -25,7 +25,10 @@ router.get('/new', function(req, res, next) {
     knex('authors')
     .select('first_name', 'last_name', 'author_id')
     .then(function(authorNames){
-      res.render('new_edit_books', { title: 'New', action: 'new', name: authorNames });
+      res.render('new_edit_books', { title: 'New',
+                                     action: 'new',
+                                     name: authorNames
+                                     });
     })
 });
 
@@ -71,13 +74,34 @@ router.post('/newpost', function(req, res, next) {
 
 //edit--------------------------------------------------------------------------
 
-router.get('/edit', function(req, res, next) {
-    res.render('new_edit_books', {
-        title: 'Edit'
-    });
+router.get('/edit/:id', function(req, res, next) {
+
+  knex('books_and_authors')
+      .fullOuterJoin('books', 'books_and_authors.book_id', '=', 'books.book_id')
+      .fullOuterJoin('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
+      .select('title', 'description', 'cover_url', 'genre')
+      .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
+      .groupBy('title', 'description', 'cover_url', 'genre')
+      .where({'books.book_id': req.params.id})
+      .first()
+      .then(function(bookjoin) {
+        return knex('authors')
+        .select('first_name', 'last_name', 'author_id')
+        .then(function(authorNames){
+          console.log(authorNames);
+          res.render('new_edit_books', { title: 'Edit',
+                                         action: 'edit',
+                                         pTitle: bookjoin.title,
+                                         pGenre: bookjoin.genre,
+                                         pDes: bookjoin.description,
+                                         pUrl: bookjoin.cover_url,
+                                         name: authorNames});
+
+    })
+  })
 });
 
-router.post('/edit', function(req, res, next) {
+router.post('/editpost', function(req, res, next) {
     res.redirect('/');
 });
 

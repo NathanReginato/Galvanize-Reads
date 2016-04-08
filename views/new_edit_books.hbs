@@ -8,13 +8,19 @@
       <div class="form-group">
         <label class="col-lg-2 control-label">Title</label>
         <div class="col-lg-10">
-          <input type="text" class="form-control" name="book-title" placeholder="Title" >
+          <input type="text" class="form-control" name="book-title" value="{{pTitle}}" placeholder="title" >
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Genre</label>
+        <div class="col-lg-10">
+          <input type="text" class="form-control" name="genre" value="{{pGenre}}" placeholder="genre" >
         </div>
       </div>
       <div class="form-group">
         <label class="col-lg-2 control-label">Description</label>
         <div class="col-lg-10">
-          <textarea class="form-control" name="description" rows="5" id="textArea" ></textarea>
+          <textarea class="form-control" name="description" rows="5" id="textArea" >{{pDes}}</textarea>
         </div>
       </div>
       <div class="form-group">
@@ -45,7 +51,7 @@
       <div class="form-group">
         <label class="col-lg-2 control-label">Image URL</label>
         <div class="col-lg-10">
-          <input type="text" class="form-control" name="img-url" >
+          <input type="text" class="form-control" name="img-url" value="{{pUrl}}" placeholder="url" >
         </div>
       </div>
       <div class="form-group">
