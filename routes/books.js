@@ -12,7 +12,6 @@ knex('books_and_authors')
     .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
     .groupBy('title', 'description', 'cover_url')
     .then(function(bookjoin) {
-      console.log(bookjoin);
       res.render('view_books', {book: bookjoin });
     })
 

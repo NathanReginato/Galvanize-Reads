@@ -3,6 +3,14 @@
 {{#each book}}
   <h2>{{title}}</h2>
   <h3>{{genre}}</h3>
+  <h4>
+  {{#each first_name}}
+    <span>{{this}}</span>
+  {{/each}}
+  {{#each last_name}}
+    <span>{{this}}</span>
+  {{/each}}
+</h4>
   <p>{{description}}</p>
   <img src="{{cover_url}}" alt="" />
 {{/each}}
