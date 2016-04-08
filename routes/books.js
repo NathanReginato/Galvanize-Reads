@@ -37,9 +37,16 @@ router.post('/newpost', function(req, res, next) {
       })
       console.log(splitAuthors);
       console.log('with author');
-      
+
     } else {
+      //Insert book without author(s)!
       console.log('without author');
+      knex('books')
+      .returning('book_id')
+      .insert({title: 'Book'})
+      .then(function(id){
+        console.log(id);
+      })
     }
     res.redirect('/');
 });
