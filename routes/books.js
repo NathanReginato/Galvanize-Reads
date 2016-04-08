@@ -6,8 +6,8 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
 //req all from database
 knex('books_and_authors')
-    .join('books', 'books_and_authors.book_id', '=', 'books.book_id')
-    .join('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
+    .fullOuterJoin('books', 'books_and_authors.book_id', '=', 'books.book_id')
+    .fullOuterJoin('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
     .select('title', 'description', 'cover_url')
     .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
     .groupBy('title', 'description', 'cover_url')
@@ -43,7 +43,9 @@ router.post('/newpost', function(req, res, next) {
       console.log('without author');
       knex('books')
       .returning('book_id')
-      .insert({title: 'Book'})
+      .insert({title: req.body['book-title'],
+               description: req.body.description,
+               cover_url: req.body['img-url']})
       .then(function(id){
         console.log(id);
       })
