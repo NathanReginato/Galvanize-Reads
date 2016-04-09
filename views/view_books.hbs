@@ -1,16 +1,27 @@
 <h1>Books</h1>
 
 {{#each book}}
+<div class="col-md-6 books_container">
+{{#if book_id}}
+  <h4 class="text-right">{{genre}}</h4>
   <h2>{{title}}</h2>
-  <h3>{{genre}}</h3>
   <h5>
   {{#each first_name}}
-    <span>{{this}}</span>
+    <span><a href="/authors">{{this}}</a></span>
   {{/each}}
   {{#each last_name}}
     <span>{{this}}</span>
   {{/each}}
+  {{#each genre}}
+    <h3>{{this}}</h3>
+  {{/each}}
   </h5>
-  <p>{{description}}</p>
-  <img src="{{cover_url}}" alt="" />
+  <a href="/books/{{book_id}}"><img class="book_img" src="{{cover_url}}" alt="" /></a>
+  <p class="description">{{description}}</p>
+  <br>
+  <a href="books/edit/{{book_id}}" class="btn btn-warning">EDIT</a>
+  <a href="books/delete/{{book_id}}" class="btn btn-danger">DELETE</a>
+  </div>
+{{/if}}
+
 {{/each}}
