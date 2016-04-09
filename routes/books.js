@@ -10,11 +10,10 @@ router.get('/', function(req, res, next) {
 knex('books_and_authors')
     .fullOuterJoin('books', 'books_and_authors.book_id', '=', 'books.book_id')
     .fullOuterJoin('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
-    .select('title', 'description', 'cover_url')
+    .select('title', 'description', 'cover_url', 'genre', 'books.book_id', 'books_and_authors.author_id')
     .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
-    .groupBy('title', 'description', 'cover_url')
+    .groupBy('title', 'description', 'cover_url', 'genre', 'books.book_id','books_and_authors.author_id')
     .then(function(bookjoin) {
-      console.log(bookjoin);
       // Implement at some point!!!!
       // for (var i = 0; i < bookjoin.first_name.length; i++) {
       //   fullname.push(bookjoin.first_name[i] + ' ' + bookjoin.last_name[i])
@@ -154,7 +153,7 @@ router.get('/delete/:id', function(req, res, next) {
   .where({'book_id': req.params.id})
   .del()
   .then(function(){
-    knex('books_and_authors')
+    return knex('books_and_authors')
     .where({'book_id': req.params.id})
     .del()
   })
@@ -164,16 +163,20 @@ router.get('/delete/:id', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
     //req book by id from database
     knex('books_and_authors')
-      .join('books', 'books_and_authors.book_id', '=', 'books.book_id')
-      .join('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
-      .select('title', 'description', 'cover_url')
-      .select(
-        knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
-      .groupBy('title', 'description', 'cover_url')
-      .where({'books.book_id': req.params.id})
-      .then(function(bookjoin) {
-        res.render('view_books', {book: bookjoin });
-      })
+        .where({'books_and_authors.book_id': req.params.id})
+        .fullOuterJoin('books', 'books_and_authors.book_id', '=', 'books.book_id')
+        .fullOuterJoin('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
+        .select('title', 'description', 'cover_url', 'genre', 'books_and_authors.author_id')
+        .select(knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
+        .groupBy('title', 'description', 'cover_url', 'genre', 'books_and_authors.author_id')
+
+        .then(function(bookjoin) {
+          // Implement at some point!!!!
+          // for (var i = 0; i < bookjoin.first_name.length; i++) {
+          //   fullname.push(bookjoin.first_name[i] + ' ' + bookjoin.last_name[i])
+          // }
+          res.render('view_books', { book: bookjoin });
+        })
 });
 
 module.exports = router;
