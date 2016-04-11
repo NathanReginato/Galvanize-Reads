@@ -98,11 +98,13 @@ router.get('/edit/:id', function(req, res, next) {
           .then(function(authorNames){
                 var fullname = []
                 for (var i = 0; i < bookjoin.first_name.length; i++) {
-                  fullname.push({
-                    first: bookjoin.first_name[i],
-                    last: bookjoin.last_name[i],
-                    id: ids[i]
-                  })
+                  if (bookjoin.first_name[0] !== null) {
+                    fullname.push({
+                      first: bookjoin.first_name[i],
+                      last: bookjoin.last_name[i],
+                      id: ids[i]
+                    })
+                  }
                 }
                 res.render('new_edit_books', { title: 'Edit',
                                                action: 'edit',
@@ -120,31 +122,47 @@ router.get('/edit/:id', function(req, res, next) {
 
 router.post('/edit/editpost', function(req, res, next) {
   //write code here
+  var authorIdArray
   var authorIdArrayString = req.body['authors-data'].split(',')
   var bookId = parseInt(req.body['book-id'])
-  var authorIdArray = authorIdArrayString.map(function(elem) {
+
+  authorIdArray = authorIdArrayString.map(function(elem) {
     return parseInt(elem)
   })
 
-
   knex('books_and_authors')
-  .where({'book_id': bookId })
-  .pluck('author_id')
-  .then(function(authorsFromServer){
-
-    authorsFromServer.forEach(function(elem){
-      knex('books_and_authors')
-      .where({'author_id': elem })
-      .del()
-    }).then(function(){
-
+  .where({'book_id': bookId})
+  .del()
+  .then(function() {
+    console.log(req.body);
+    return knex('books')
+    .where({'book_id': bookId})
+    .update({'title': req.body['book-title'],
+             'genre': req.body.genre,
+             'description': req.body.description,
+             'cover_url': req.body['img-url']})
+  })
+  .then(function(){
+    if (!isNaN(authorIdArray[0])) {
       authorIdArray.forEach(function(elem){
-        knex('books_and_authors')
+        console.log(elem);
+        return knex('books_and_authors')
         .returning('id')
         .insert({book_id: bookId, author_id: elem})
+        .then(function(){
+          console.log('done');
+        })
       })
-    })
+    }
   })
+
+      // authorIdArray.forEach(function(elem){
+      //   return knex('books_and_authors')
+      //   .returning('id')
+      //   .insert({book_id: bookId, author_id: elem})
+      // })
+  //   })
+  // })
   res.redirect('/');
 });
 
