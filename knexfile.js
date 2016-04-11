@@ -1,8 +1,10 @@
+
+require('dotenv').config();
 module.exports = {
 
   production: {
     client: 'postgresql',
-    connection: 'postgres://localhost/galvanize-reads'
+    connection: process.env.DATABASE_URL
   },
   pool: {
     min: 2,
