@@ -54,10 +54,10 @@ router.post('/newpost', function(req, res, next) {
                cover_url: req.body['img-url']})
       .then(function(id){
         splitAuthors.forEach(function(authorsInArray){
-          knex('books_and_authors')
+          return knex('books_and_authors')
           .returning('id')
           .insert({book_id: id[0], author_id: authorsInArray})
-          .then(function(id2){
+            .then(function(id2){
           })
         })
       })
@@ -134,7 +134,6 @@ router.post('/edit/editpost', function(req, res, next) {
   .where({'book_id': bookId})
   .del()
   .then(function() {
-    console.log(req.body);
     return knex('books')
     .where({'book_id': bookId})
     .update({'title': req.body['book-title'],
@@ -145,24 +144,14 @@ router.post('/edit/editpost', function(req, res, next) {
   .then(function(){
     if (!isNaN(authorIdArray[0])) {
       authorIdArray.forEach(function(elem){
-        console.log(elem);
         return knex('books_and_authors')
         .returning('id')
         .insert({book_id: bookId, author_id: elem})
         .then(function(){
-          console.log('done');
         })
       })
     }
   })
-
-      // authorIdArray.forEach(function(elem){
-      //   return knex('books_and_authors')
-      //   .returning('id')
-      //   .insert({book_id: bookId, author_id: elem})
-      // })
-  //   })
-  // })
   res.redirect('/');
 });
 
@@ -189,6 +178,7 @@ router.get('/:id', function(req, res, next) {
       .groupBy('title', 'description', 'cover_url', 'books.book_id')
       .where({'books.book_id': req.params.id})
       .then(function(bookjoin) {
+        console.log(bookjoin);
         res.render('view_books', {book: bookjoin });
       })
 });
