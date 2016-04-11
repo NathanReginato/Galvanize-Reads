@@ -53,13 +53,25 @@ router.post('/newpost', function(req, res, next) {
                description: req.body.description,
                cover_url: req.body['img-url']})
       .then(function(id){
-        splitAuthors.forEach(function(authorsInArray){
-          return knex('books_and_authors')
-          .returning('id')
-          .insert({book_id: id[0], author_id: authorsInArray})
-            .then(function(id2){
+          console.log(splitAuthors);
+          if (!isNaN(splitAuthors[0])) {
+            splitAuthors.forEach(function(authorsInArray){
+              return knex('books_and_authors')
+              .returning('id')
+              .insert({book_id: id[0], author_id: authorsInArray})
+              .then(function(id2){
+
+              })
+            })
+          } else {
+            console.log(id);
+            return knex('books_and_authors')
+            .returning('id')
+            .insert({book_id: id[0], author_id: 0})
+            .then(function(){
+              console.log('inserted');
           })
-        })
+        }
       })
     }
 
@@ -170,13 +182,13 @@ router.get('/delete/:id', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
     //req book by id from database
     knex('books_and_authors')
-      .join('books', 'books_and_authors.book_id', '=', 'books.book_id')
-      .join('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
+      .fullOuterJoin('books', 'books_and_authors.book_id', '=', 'books.book_id')
+      .fullOuterJoin('authors', 'books_and_authors.author_id', '=', 'authors.author_id')
       .select('title', 'description', 'cover_url', 'books.book_id')
       .select(
         knex.raw('array_agg(first_name) AS first_name ,array_agg(last_name) AS last_name'))
       .groupBy('title', 'description', 'cover_url', 'books.book_id')
-      .where({'books.book_id': req.params.id})
+      .where({'books_and_authors.book_id': req.params.id})
       .then(function(bookjoin) {
         console.log(bookjoin);
         res.render('view_books', {book: bookjoin });
